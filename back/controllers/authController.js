@@ -6,6 +6,7 @@ const register = async (req, res) => {
   try {
     const { email, password } = req.body;
     
+    
     // Check if user already exists
     const userRecord = await db.collection('users').where('email', '==', email).get();
     if (!userRecord.empty) {
@@ -46,7 +47,7 @@ const login = async (req, res) => {
     // Check password
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) {
-      return res.status(400).json({ error: 'Invalid email or password' });
+      return res.status(400).json({ error: 'Invalid password' });
     }
 
     // Create and assign a token
