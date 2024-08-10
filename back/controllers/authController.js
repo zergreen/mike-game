@@ -4,11 +4,11 @@ const db = require('../db');
 
 const register = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { username, password, companyName, department } = req.body;
     
     
     // Check if user already exists
-    const userRecord = await db.collection('users').where('email', '==', email).get();
+    const userRecord = await db.collection('users').where('username', '==', username).get();
     if (!userRecord.empty) {
       return res.status(400).json({ error: 'User already exists' });
     }
@@ -19,8 +19,10 @@ const register = async (req, res) => {
 
     // Create new user
     const newUser = {
-      email,
-      password: hashedPassword
+      username,
+      password: hashedPassword,
+      companyName,
+      department
     };
 
     const docRef = await db.collection('users').add(newUser);
@@ -33,12 +35,12 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { username, password } = req.body;
 
-    // Find user by email
-    const userRecord = await db.collection('users').where('email', '==', email).get();
+    // Find user by username
+    const userRecord = await db.collection('users').where('username', '==', username).get();
     if (userRecord.empty) {
-      return res.status(400).json({ error: 'Invalid email' });
+      return res.status(400).json({ error: 'Invalid username' });
     }
 
     const user = userRecord.docs[0].data();
